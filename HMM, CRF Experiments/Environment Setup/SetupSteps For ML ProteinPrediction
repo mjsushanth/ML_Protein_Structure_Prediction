@@ -1,0 +1,212 @@
+Setup For ML - Start.
+
+
+- Full Steps:
+
+cd "C:\Users\joems\OneDrive\Desktop\MLCV Project Items\Machine Learning CS6140"
+
+
+conda deactivate
+conda env remove -n protein_ss_prediction -y
+conda clean --all --yes
+
+
+conda create -n protein_ss_prediction python=3.10 -y
+conda activate protein_ss_prediction
+
+echo Installing Mamba for faster package management...
+conda install mamba -n base -c conda-forge -y
+
+
+echo Installing core scientific and machine learning libraries...
+mamba install -c conda-forge ^
+    numpy scipy pandas ^
+    matplotlib seaborn plotly ^
+    scikit-learn tqdm h5py ^
+    jupyterlab notebook ipykernel ^
+    -y
+
+
+pip install torch==2.4.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+echo Installing HMM and CRF libraries...
+pip install hmmlearn pomegranate python-crfsuite sklearn-crfsuite torchcrf
+
+
+echo Installing Bioinformatics libraries...
+pip install biopython
+
+echo Installing additional utility packages for development and debugging...
+pip install black isort loguru python-json-logger tenacity
+
+
+echo Installing backup and additional packages for HMM and CRF implementations, and JobLib for saving...
+pip install scikit-crfsuite
+pip install joblib
+
+echo Installing Weights & Biases (wandb) for experiment tracking and visualization...
+pip install wandb
+
+
+
+echo Setting up Jupyter kernel for the 'protein_ss_prediction' environment...
+conda activate protein_ss_prediction
+python -m ipykernel install --user --name protein_ss_prediction --display-name "Python (protein_ss_prediction)"
+
+
+
+## VERIFICATION:
+
+echo Verifying Python and CUDA installation...
+python -c "import ctypes; print('ctypes loaded successfully')"
+
+echo Verifying PyTorch and CUDA availability...
+python -c "import torch; print(f'PyTorch Version: {torch.__version__}'); print(f'CUDA Available: {torch.cuda.is_available()}'); print(f'CUDA Version: {torch.version.cuda}'); print(f'GPU Device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"No GPU available\"}'); print(f'Number of GPUs: {torch.cuda.device_count()}')"
+
+
+echo Verifying wandb installation...
+python -c "import wandb; print(f'wandb Version: {wandb.__version__}')"
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+Get-ChildItem C:\Users\joems\miniconda3\envs -Directory | ForEach-Object {
+    $size = (Get-ChildItem $_.FullName -Recurse | Measure-Object -Property Length -Sum).Sum / 1GB
+    [PSCustomObject]@{
+        Environment = $_.Name
+        "Size(GB)" = [math]::Round($size, 2)
+    }
+}
+
+
+minconda package wise size:
+
+conda list -n eth3d_reconstruction --explicit > eth3d_packages.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+GIVE up on pystruct. It has not been actively maintained for years.
+Failed Steps:
+
+
+---- failed: followed, pystruct wheels have an issue.
+echo PyStruct - has an issue, so we downgrade, install and upgrade setup tools again.
+pip install setuptools==57.5.0
+pip install pystruct
+pip install --upgrade setuptools
+
+---- failed:
+curl --version
+conda activate protein_ss_prediction
+---- failed:
+git clone https://github.com/pystruct/pystruct.git
+cd pystruct
+
+---- failed: ## curl patch not working.
+curl https://patch-diff.githubusercontent.com/raw/pystruct/pystruct/pull/221.patch | git apply
+
+---- failed: manual patch git apply.. isnt working too. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Things that i prefer in project, code writing.
+
+
+1. Horizontally lengthy code, in python. Not too vertically lengthy. 
+2. First-step analysis for new ideas, or RCA when issues are found.
+3. Priority on Class, Object, Idea - Design before actually implementing code.
+4. Reminding me to stop chatting in 1 chat, and make a 'Status, Progression, Change document' to resume work in a new chat. 
+5. Always opt for simpler,  easier approaches rather than over-engineered coding, if possible.
+6. Always suggest to check new libraries or packages if it makes our work simple.
+7. Offer bullet-point summaries and explanation on critical logic, and knowledge. That is, why we do things, and what we do. 
+
+
+
+
+
+### Recommended clean skeleton to have idempodent/independent code.
+        
+        # 1. Define Class for the ML Model
+        class MLModel:
+            def __init__(self, **params):
+                pass
+            def fit(self, X, y):
+                pass        
+            def predict(self, X):
+                pass
+        
+        # 2. Define Helper Functions for Evaluation and Metrics
+        def evaluate_model(y_true, y_pred, model_name):
+            # Evaluate the model, print performance metrics
+            pass
+        
+        def plot_confusion_matrix(y_true, y_pred, class_names, model_name):
+            pass
+        
+        # 3. Define Training and Evaluation Pipeline
+        def train_and_evaluate_model(X_train, X_test, y_train, y_test, model_name, class_names):
+            pass
+        
+        # 4. Helper Function for Train-Test Split
+        def split_data(X, y, test_size=0.2, random_state=42):
+            pass
+        
+        # 5. Define Visualization and Plotting Functions
+        def plot_decision_boundary(X, y, model, model_name):
+            pass
+        
+        # 6. Main Execution Block
+        if __name__ == "__main__":
+            X, y = None, None  # Placeholder for data loading            
+            X_train, X_test, y_train, y_test = split_data(X, y)        
+            class_names = ['Class 0', 'Class 1']
+            model = train_and_evaluate_model(X_train, X_test, y_train, y_test, "Custom Model", class_names)
+            plot_decision_boundary(X_test, y_test, model, "Custom Model")
+        
+
+    - not only is the name == main good for handling clean, intended execution pattern, but its so important for torch.multiprocessing. 
+    - ( https://discuss.pytorch.org/t/if-name-main-for-window10/19377/2 ).
+
+

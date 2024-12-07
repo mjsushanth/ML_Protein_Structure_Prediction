@@ -1,0 +1,32 @@
+name: protein_ss_prediction
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - jupyterlab
+  - notebook
+  - ipykernel
+  - pytorch
+  - torchvision
+  - torchaudio
+  - cudatoolkit=11.6
+  - pip
+  - pip:
+    - torchcrf
+    - hmmlearn
+    - biopython
+    - torch
+    - scikit-image
+    - plotly
+    - umap-learn
+    - tenacity
+    - loguru
+    - black
+    - isort
+
